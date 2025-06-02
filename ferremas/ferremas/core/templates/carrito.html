@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carrito de Compras - Ferremas</title>
+<link rel="stylesheet" href="{% static 'css/carrito.css' %}" />
+</head>
+<body>
+
+<div class="carrito">
+  <h2>Tu carrito</h2>
+  {% if productos_carrito %}
+  <ul>
+    {% for item in productos_carrito %}
+    <li>
+      <img src="{{ item.producto.imagen_url }}" alt="{{ item.producto.nombre }}">
+      <div class="detalle">
+        <strong>{{ item.producto.nombre }}</strong><br/>
+        Precio unitario: ${{ item.producto.precio|floatformat:0 }}
+      </div>
+      <div class="cantidad">Cant: {{ item.cantidad }}</div>
+      <div class="subtotal">$ {{ item.subtotal|floatformat:0 }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="total">Total: ${{ total|floatformat:0 }}</p>
+  {% else %}
+  <p>Tu carrito está vacío.</p>
+  {% endif %}
+</div>
+
+</body>
+</html>

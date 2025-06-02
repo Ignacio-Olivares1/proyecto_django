@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ferremas - Inicio</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+  <!-- Menú de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+    <div class="collapse navbar-collapse show">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="/login/">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="/carrito/">Carrito</a></li>
+      </ul>
+    </div>
+  </nav>
+  <button id="btn-cambiar-moneda" class="btn btn-outline-primary">Ver en USD</button>
+
+
+
+  <!-- Productos destacados -->
+  <div class="container mb-5">
+    <h2 class="mb-4 text-center">Productos Destacados</h2>
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="product-card">
+          <img src="{% static 'img/taladro.webp' %}" alt="Producto 1">
+          <h5>Taladro Inalámbrico</h5>
+          <p class="precio" data-precio="{{ p.precio }}">{{ p.precio|floatformat:0 }} CLP</p>
+
+          <button class="btn btn-sm btn-primary">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="product-card">
+          <img src="{% static 'img/esmeril angular.png' %}" alt="Producto 2">
+          <h5>Esmeril Angular</h5>
+          <p class="precio" data-precio="{{ p.precio }}">{{ p.precio|floatformat:0 }} CLP</p>
+
+          <button class="btn btn-sm btn-primary">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="product-card">
+          <img src="{% static 'img/cemento.png' %}" alt="Producto 3">
+          <h5>Cemento</h5>
+          <p class="precio" data-precio="{{ p.precio }}">{{ p.precio|floatformat:0 }} CLP</p>
+          <button class="btn btn-sm btn-primary">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="product-card">
+          <img src="{% static 'img/arena.webp' %}" alt="Producto 4">
+          <h5>arena</h5>
+          <p class="precio" data-precio="{{ p.precio }}">{{ p.precio|floatformat:0 }} CLP</p>
+
+          <button class="btn btn-sm btn-primary">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="product-card">
+          <img src="{% static 'img/casco.webp' %}" alt="Producto 4">
+          <h5>casco</h5>
+          <p class="precio" data-precio="{{ p.precio }}">{{ p.precio|floatformat:0 }} CLP</p>
+
+          <button class="btn btn-sm btn-primary">Agregar al carrito</button>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="product-card">
+          <img src="{% static 'img/guantes.webp' %}" alt="Producto 4">
+          <h5>guantes</h5>
+          <p class="precio" data-precio="{{ p.precio }}">{{ p.precio|floatformat:0 }} CLP</p>
+
+          <button class="btn btn-sm btn-primary">Agregar al carrito</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Ferremas - Todos los derechos reservados.</p>
+  </footer>
+
+</body>
+ <script>
+    let enCLP = true;
+    let valorDolar = null;
+
+    document.getElementById("btn-cambiar-moneda").addEventListener("click", async () => {
+      const precios = document.querySelectorAll(".precio");
+
+      if (valorDolar === null) {
+        try {
+          const res = await fetch("https://mindicador.cl/api/dolar");
+          const data = await res.json();
+          valorDolar = data.serie[0].valor;
+        } catch (err) {
+          alert("No se pudo obtener el valor del dólar.");
+          return;
+        }
+      }
+
+      precios.forEach(el => {
+        const clp = parseFloat(el.dataset.precio);
+        if (enCLP) {
+          const usd = clp / valorDolar;
+          el.textContent = `USD $${usd.toFixed(2)}`;
+        } else {
+          el.textContent = `${clp.toLocaleString()} CLP`;
+        }
+      });
+
+      enCLP = !enCLP;
+      document.getElementById("btn-cambiar-moneda").textContent = enCLP ? "Ver en USD" : "Ver en CLP";
+    });
+  </script>
+</html>
